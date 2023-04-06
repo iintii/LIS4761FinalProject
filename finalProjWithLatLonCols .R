@@ -125,6 +125,7 @@ tweets$tweet_coord[tweets$tweet_location == "Napa, CA"] <- "[38.297539, -122.286
 tweets$tweet_coord[tweets$tweet_location == "Redwood City, CA"] <- "[37.487846, -122.236115]"
 tweets$tweet_coord[tweets$tweet_location == "West Covina, CA"] <- "[34.068623, -117.938950]"
 
+                          ##########################################################################
 
 # remove [] from tweet co-ord
 tweets$tweet_coord <- gsub("\\[|\\]", "", tweets$tweet_coord)
