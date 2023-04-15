@@ -51,6 +51,12 @@ custom_stop_words <- tribble(
   "t.co", "CUSTOM",
   "virginamerica", "CUSTOM",
   "sfo", "CUSTOM",
+  "united", "CUSTOM",
+  "southwestair", "CUSTOM",
+  "americanair", "CUSTOM",
+  "usairways","CUSTOM",
+  "jetblue","CUSTOM",
+  "flight", "CUSTOM"
 )
 # Bind the custom stop words to stop_words
 stop_words2 <- stop_words %>% 
