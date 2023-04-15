@@ -56,7 +56,11 @@ custom_stop_words <- tribble(
   "americanair", "CUSTOM",
   "usairways","CUSTOM",
   "jetblue","CUSTOM",
-  "flight", "CUSTOM"
+  "flight", "CUSTOM",
+  "flights","CUSTOM",
+  "airline","CUSTOM",
+  "fly","CUSTOM",
+  "guys","CUSTOM"
 )
 # Bind the custom stop words to stop_words
 stop_words2 <- stop_words %>% 
@@ -86,7 +90,7 @@ tidy_twitter %>% count(airline_sentiment)
 word_counts <- tidy_twitter %>% 
   filter(airline_sentiment == "neutral") %>% 
   count(word) %>%  
-  filter(n > 100) %>% 
+  filter(n > 50) %>% 
   arrange(desc(n))  
 
 ggplot(word_counts, aes(reorder(word, n), n)) +
@@ -98,7 +102,7 @@ ggplot(word_counts, aes(reorder(word, n), n)) +
 word_counts <- tidy_twitter %>% 
   filter(airline_sentiment == "positive") %>% 
   count(word) %>%  
-  filter(n > 100) %>% 
+  filter(n > 50) %>% 
   arrange(desc(n))  
 
 ggplot(word_counts, aes(reorder(word, n), n)) +
@@ -138,7 +142,18 @@ ggplot(word_counts, aes(x = word2, y = n, fill  = airline_sentiment)) +
   # Flip the coordinates and add a title: "Twitter Word Counts"
    coord_flip() +
    ggtitle("Sentiment Comparison") 
+#Frequency od tweets for each airline 
+tidy_twitter %>% count(airline)
+#Sentiment Count by Each Airline
+aa_count <- tidy_twitter %>%
+  group_by(airline, airline_sentiment) %>%
+  summarise(count = n()) %>%
+  ungroup()
 
+ggplot(aa_count, aes(x = airline, y = count, fill = airline_sentiment)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "Airline", y = "Sentiment Count", title = "Sentiment Count by Each Airline") +
+  theme_minimal()
 ```
 
 ```{r, Word Cloud}
@@ -147,12 +162,12 @@ word_counts <- tidy_twitter %>%
   count(word)
 
 # Define the color palette with more interpolated colors
-color_palette <- colorRampPalette(brewer.pal(8, "Dark2"))(300)
+color_palette <- colorRampPalette(brewer.pal(8, "Dark2"))(100)
 
 wordcloud(
   words = word_counts$word,
   freq = word_counts$n,
-  max.words = 300,
+  max.words = 100,
   colors = color_palette,
   random.order = FALSE,
   rot.per = 0.35,
@@ -215,6 +230,18 @@ g2 = ggplot(word_count1, aes(x = reorder(sentiment, -n), y = n)) +
 
 grid.arrange(g1,g2,ncol = 2)
 
+#NRC Sentiment count by Each airline
+
+ab_count <- sentiment_twitter %>%
+  group_by(airline, sentiment) %>%
+  summarise(count = n()) %>%
+  ungroup()
+
+ggplot(ab_count, aes(x = airline, y = count, fill = sentiment)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "Airline", y = "Sentiment Count", title = "Sentiment Count by Each Airline") +
+  theme_minimal()
+
 ```
 
 ```{r, Topic Modeling and Pattern Analysis}
@@ -238,9 +265,7 @@ lda_out2 <- LDA(
 # Tidy the matrix of word probabilities
 lda_topics2 <- lda_out2 %>%   tidy(matrix = "beta")
 
-# Arrange the topics by word probabilities in descending order
-lda_topics2  %>% 
-  arrange(desc(beta))
+
 
 #
 word_probs2 <- lda_topics2 %>% 
